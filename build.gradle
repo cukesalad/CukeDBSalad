@@ -1,0 +1,130 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+    }
+}
+//apply plugin: 'com.jfrog.bintray'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+group = 'org.cukesalad'
+archivesBaseName = project.name
+version = '1.0.0'
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'Gradle Quickstart',
+    'Implementation-Version': version
+  }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+  compile ('com.sun.jersey:jersey-client:1.19')
+  compile ('commons-io:commons-io:2.4')
+  compile('info.cukes:cucumber-java:1.2.4')
+  compile(group: 'junit', name: 'junit', version: '4.12')
+  compile('info.cukes:cucumber-junit:1.2.4')
+  compile('com.sun.jersey:jersey-json:1.19')
+  compile('net.sourceforge.htmlunit:htmlunit:2.13')
+  compile('ch.qos.logback:logback-classic:1.1.3')
+  compile(group: 'com.oracle', name: 'ojdbc6', version: '11.1.0.7.0')
+  
+  testCompile('org.mock-server:mockserver-integration-testing:3.9.17')
+  testCompile('org.mock-server:mockserver-netty:3.9.17')
+  testCompile('org.hsqldb:hsqldb:2.3.3')
+  
+}
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.9'
+}
+
+
+////////////////////////////////////////////////////
+// this is needed for adding javadoc jar and source jar in distribution
+task javadocJar(type: Jar) {
+  classifier = 'javadoc'
+  from javadoc
+}
+task sourcesJar(type: Jar) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+artifacts {
+  archives javadocJar, sourcesJar
+}
+////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////
+// this is needed for signing the jars in distribution
+signing {
+    sign configurations.archives
+}
+////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////
+// this is needed for deploying the jars to maven central
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name archivesBaseName
+        packaging 'jar'
+        // optionally artifactId can be defined here
+        description 'This module is intended to help in testing REST services.'
+        url 'http://cukesalad.org'
+
+        scm {
+          connection 'scm:git:git@github.com:cukesalad/CukeRestSalad.git'
+          developerConnection 'scm:git:git@github.com:cukesalad/CukeRestSalad.git'
+          url 'https://github.com/cukesalad/CukeRestSalad'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'bharathcp'
+            name 'Bharath Prakash'
+            email 'cippy.bharath@gmail.com'
+          }
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////
+// This is needed for jfrog bintray plugin
+/*pkg {
+  version {
+              name = '1.0-SNAPSHOT'
+              desc = 'Cuke REST salad'
+              released  = new Date()
+      }
+}*/
+////////////////////////////////////////////////
