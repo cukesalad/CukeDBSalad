@@ -14,8 +14,8 @@ import cucumber.api.java.en.When;
 
 public class DBSaladSteps {
 
-  @When("^I set up data in DB using \"([^\"]*)\", which will tear at the end using \"([^\"]*)\"$")
-  public void i_setup_up_data_in_db_using_which_will_tear_at_the_end_using(String setupFile, String tearDownFile)
+  @When("^I set up data in DB using \"([^\"]*)\", and rollback test data at the end using \"([^\"]*)\"$")
+  public void i_setup_up_data_in_db_using_and_rollback_test_data_at_the_end_using(String setupFile, String tearDownFile)
       throws Throwable {
     // first clean dirty data
     i_teardown_data_in_db_using(tearDownFile);
@@ -63,8 +63,8 @@ public class DBSaladSteps {
     dynamicSQLQuery.setParameterMap(parameterMap);
     DBSaladHook.executeUpdate(dynamicSQLQuery);
   }
-  @Given("^I set up data in DB using \"([^\"]*)\", which will tear at the end using \"([^\"]*)\" with below parameters:$")
-  public void i_setup_up_data_in_DB_using_which_will_tear_at_the_end_using_with_below_parameters(String setupFileName, String tearDownFileName, DataTable parameters) throws Throwable {
+  @Given("^I set up data in DB using \"([^\"]*)\", and rollback test data at the end using \"([^\"]*)\" with below parameters:$")
+  public void i_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters(String setupFileName, String tearDownFileName, DataTable parameters) throws Throwable {
  // first clean dirty data
     i_teardown_data_in_DB_using_and_below_parameters(tearDownFileName, parameters);
     // then setup data
