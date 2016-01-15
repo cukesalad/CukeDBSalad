@@ -192,6 +192,35 @@ public class DBSaladStepsTest {
   }
 
   @Test
+  public void testI_run_the_sql_file_for_the_below_data() throws Throwable{
+    List<List<String>> raw = new ArrayList<List<String>>();
+    raw.add(Arrays.asList("user","name", "email"));
+    raw.add(Arrays.asList("1","Ned Stark", "ned@gmail.com"));
+    raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
+    raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
+    DataTable parameters = DataTable.create(raw );
+    dbSaladSteps.i_run_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
+    
+    DynamicSQLQuery sqlQuery = new DynamicSQLQuery();
+    sqlQuery.setSqlFileName("selectuser.sql");
+    ResultSet resultSet = DBSaladHook.executeQuery(sqlQuery );
+    resultSet.next();
+    assertEquals("1", resultSet.getString("id"));
+    assertEquals("Ned Stark", resultSet.getString("name"));
+    assertEquals("ned@gmail.com", resultSet.getString("email"));
+    
+    resultSet.next();
+    assertEquals("2", resultSet.getString("id"));
+    assertEquals("Tyrion", resultSet.getString("name"));
+    assertEquals("tyrion@yahoo.com", resultSet.getString("email"));
+    
+    resultSet.next();
+    assertEquals("3", resultSet.getString("id"));
+    assertEquals("Daenerys", resultSet.getString("name"));
+    assertEquals("daenerys@gmail.com", resultSet.getString("email"));
+  }
+  
+  @Test
   public void testCreateParamMap() {
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));

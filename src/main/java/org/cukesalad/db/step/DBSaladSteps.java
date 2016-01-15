@@ -1,6 +1,7 @@
 package org.cukesalad.db.step;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.cukesalad.db.support.DBSaladHook;
@@ -63,6 +64,7 @@ public class DBSaladSteps {
     dynamicSQLQuery.setParameterMap(parameterMap);
     DBSaladHook.executeUpdate(dynamicSQLQuery);
   }
+
   @Given("^I set up data in DB using \"([^\"]*)\", and rollback test data at the end using \"([^\"]*)\" with below parameters:$")
   public void i_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters(String setupFileName, String tearDownFileName, DataTable parameters) throws Throwable {
  // first clean dirty data
@@ -71,6 +73,18 @@ public class DBSaladSteps {
     i_set_up_data_in_DB_using_and_below_parameters(setupFileName, parameters);
     collectTearDownFiles(tearDownFileName, createParamMap(parameters));
   }
+
+  @Given("^I run the sql file \"([^\"]*)\", for the below data:$")
+  public void i_run_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters) throws Throwable {
+    List<Map<String, String>> paramMapList = parameters.asMaps(String.class, String.class);
+    for (Map<String, String> paramMap : paramMapList) {
+      DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
+      dynamicSQLQuery.setSqlFileName(setupFileName);
+      dynamicSQLQuery.setParameterMap(paramMap);
+      DBSaladHook.executeUpdate(dynamicSQLQuery);
+    }
+  }
+
   
   public Map<String, String> createParamMap(DataTable parameters) {
     Map<String, String> parameterMap = new HashMap<String, String>(parameters.asMap(String.class, String.class));
