@@ -16,6 +16,13 @@ Add the below dependancy similar to - SampleCukeDBTest :
 ```gradle
   compile('org.cukesalad:CukeDBSalad:1.0.0')
 ```
+Create a DB connection details file - "dbsalad.properties" with below details:
+```properties
+db.url=jdbc:hsqldb:mem:testcase;shutdown=true
+db.username=user
+db.password=pwd
+db.driver.class=org.hsqldb.jdbcDriver
+```
 Create feature files inside your project under src/main/resources/feature
 Run the below commands for linux/mac:
 ```shell
@@ -59,6 +66,8 @@ Feature: A feature to demonstrate DB cucumber util to setup/teardown/validate da
   | 3  | Daenerys  | daenerys@gmail.com |
 
 ```
+## What if i have different DB instances/schemas for different environments?
+Add files like ```dbsalad.dev.properties``` and pass a run time jvm arg like ```-Denv=dev```. The DB details of ```dbsalad.dev.properties``` will override ```dbsalad.properties``` which is the default
 
 ##Latest release:
 
