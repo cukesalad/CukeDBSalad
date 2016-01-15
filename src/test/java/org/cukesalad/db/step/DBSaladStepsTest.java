@@ -198,7 +198,7 @@ public class DBSaladStepsTest {
     raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
     raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
     DataTable parameters = DataTable.create(raw );
-    dbSaladSteps.i_run_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
+    dbSaladSteps.i_set_up_data_using_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
     
     DynamicSQLQuery sqlQuery = new DynamicSQLQuery();
     sqlQuery.setSqlFileName("selectuser.sql");
@@ -227,7 +227,7 @@ public class DBSaladStepsTest {
     raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
     raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
     DataTable parameters = DataTable.create(raw );
-    dbSaladSteps.i_run_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
+    dbSaladSteps.i_set_up_data_using_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
     dbSaladSteps.the_result_of_the_sql_is("selectuser.sql", parameters);
   }
   

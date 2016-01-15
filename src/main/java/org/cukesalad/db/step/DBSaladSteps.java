@@ -79,8 +79,8 @@ public class DBSaladSteps {
     collectTearDownFiles(tearDownFileName, createParamMap(parameters));
   }
 
-  @Given("^I run the sql file \"([^\"]*)\", for the below data:$")
-  public void i_run_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters) throws Throwable {
+  @Given("^I set up data using the sql file \"([^\"]*)\", for the below data:$")
+  public void i_set_up_data_using_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters) throws Throwable {
     List<Map<String, String>> paramMapList = parameters.asMaps(String.class, String.class);
     for (Map<String, String> paramMap : paramMapList) {
       DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
