@@ -15,6 +15,7 @@ Create the project you want to use for testing. This will host all you feature f
 Add the below dependancy similar to - SampleCukeDBTest :
 ```gradle
   compile('org.cukesalad:CukeDBSalad:1.0.0')
+  compile('jdbc driver for your db:1.0.0')
 ```
 Create a DB connection details file - "dbsalad.properties" with below details:
 ```properties
