@@ -35,7 +35,9 @@ public class DBSaladHookTest {
     dbHook.beforeHook();
     assertNotNull(DBSaladContext.dbconnection);
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
-    dynamicSQLQuery.setSqlFileName("test.sql");
+    dynamicSQLQuery.setSqlFileName("createusertable.sql");
+    DBSaladHook.executeUpdate(dynamicSQLQuery);
+    dynamicSQLQuery.setSqlFileName("insertusers.sql");
     DBSaladHook.executeUpdate(dynamicSQLQuery);
     dbHook.afterHook();
   }
@@ -48,16 +50,18 @@ public class DBSaladHookTest {
     dbHook.beforeHook();
     assertNotNull(DBSaladContext.dbconnection);
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
-    dynamicSQLQuery.setSqlFileName("test.sql");
+    dynamicSQLQuery.setSqlFileName("createusertable.sql");
+    DBSaladHook.executeUpdate(dynamicSQLQuery);
+    dynamicSQLQuery.setSqlFileName("insertusers.sql");
     DBSaladHook.executeUpdate(dynamicSQLQuery);
     
     DynamicSQLQuery tearDownSQLQuery = new DynamicSQLQuery();
-    tearDownSQLQuery.setSqlFileName("tearDowntest.sql");
+    tearDownSQLQuery.setSqlFileName("teardownusers.sql");
     DBSaladContext.tearDownFiles.add(tearDownSQLQuery );
     DBSaladHook.tearDownDBTestData();
     
     DynamicSQLQuery sqlQuery = new DynamicSQLQuery();
-    sqlQuery.setSqlFileName("selecttest.sql");
+    sqlQuery.setSqlFileName("selectuser.sql");
     ResultSet resultSet = DBSaladHook.executeQuery(sqlQuery );
     assertTrue("Expecting no result, but some result returned",!resultSet.next());
     
@@ -72,11 +76,13 @@ public class DBSaladHookTest {
     dbHook.beforeHook();
     assertNotNull(DBSaladContext.dbconnection);
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
-    dynamicSQLQuery.setSqlFileName("test.sql");
+    dynamicSQLQuery.setSqlFileName("createusertable.sql");
+    DBSaladHook.executeUpdate(dynamicSQLQuery);
+    dynamicSQLQuery.setSqlFileName("insertusers.sql");
     DBSaladHook.executeUpdate(dynamicSQLQuery);
         
     DynamicSQLQuery sqlQuery = new DynamicSQLQuery();
-    sqlQuery.setSqlFileName("selecttest.sql");
+    sqlQuery.setSqlFileName("selectuser.sql");
     ResultSet resultSet = DBSaladHook.executeQuery(sqlQuery );
     resultSet.next();
     assertEquals("1", resultSet.getString("id"));
