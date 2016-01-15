@@ -29,26 +29,35 @@ Sample feature file:
 Feature: A feature to demonstrate DB cucumber util to setup/teardown/validate data in RDBMS
 
   Scenario: testing setup/teardown/validate data in RDBMS
-    Given I start building a request with "POST" method and URL "https://graph.facebook.com/v2.5/me"
-    And I add "access_token" equal to "invalid_access_token" as parameter to request
-    And I add post body to the request as:
-      """
-        {
-            "attr" : "any value"
-        }
-      """
-    And I add the below values as headers to the request:
-    | headerName    | headerValue       |
-    | Content-Type  | application/json  |
-    And I retrieve the resource
-    Then the status code returned should be 400
-    And The response should contain following headers:
-      | headerName   | headerValue      |
-      | Content-Type | application/json; charset=UTF-8 |
-    And The response should contain "$..error.message" with value "Invalid OAuth access token."
-    And The response should contain "$..error.type" with value "OAuthException"
-    And The response should contain "$..error.code" with value "190"
-    And The response should contain "$..error.fbtrace_id"
+  Given I set up data in DB using "insertusers.sql"
+  And I teardown data in DB using "teardownusers.sql"
+  Given I set up data in DB using "insertuserswithparams.sql" and below parameters:
+  | key   | value |
+  | id1   | 1     |
+  | id2   | 2     |
+  | id3   | 3     |
+  And I teardown data in DB using "teardownuserswithparam.sql" and below parameters:
+  | key   | value |
+  | id1   | 1     |
+  | id2   | 2     |
+  | id3   | 3     |
+  Given I set up data in DB using "insertusers.sql", and rollback test data at the end using "teardownusers.sql"
+  Given I set up data in DB using "insertuserswithparams.sql", and rollback test data at the end using "teardownuserswithparam.sql" with below  parameters:
+  | key   | value |
+  | id1   | 1     |
+  | id2   | 2     |
+  | id3   | 3     |
+  Given I set up data using the sql file "parameterisedinsertusers.sql", for the below data:
+  | id | name      | email              |
+  | 1  | Ned Stark | ned@gmail.com      |
+  | 2  | Tyrion    | tyrion@yahoo.com   |
+  | 3  | Daenerys  | daenerys@gmail.com |
+  Then the result of the sql "selectuser.sql", is:
+  | id | name      | email              |
+  | 1  | Ned Stark | ned@gmail.com      |
+  | 2  | Tyrion    | tyrion@yahoo.com   |
+  | 3  | Daenerys  | daenerys@gmail.com |
+
 ```
 
 ##Latest release:
