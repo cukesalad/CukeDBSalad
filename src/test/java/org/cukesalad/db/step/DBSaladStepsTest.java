@@ -2,7 +2,6 @@ package org.cukesalad.db.step;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -113,9 +112,9 @@ public class DBSaladStepsTest {
     dbSaladSteps.i_set_up_data_in_db_using("insertusers.sql");
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));
-    raw.add(Arrays.asList("user1","1"));
-    raw.add(Arrays.asList("user2","2"));
-    raw.add(Arrays.asList("user3","3"));
+    raw.add(Arrays.asList("id1","1"));
+    raw.add(Arrays.asList("id2","2"));
+    raw.add(Arrays.asList("id3","3"));
     DataTable parameters = DataTable.create(raw );
         
     dbSaladSteps.i_teardown_data_in_DB_using_and_below_parameters("teardownuserswithparam.sql", parameters);
@@ -131,9 +130,9 @@ public class DBSaladStepsTest {
   public void testI_set_up_data_in_DB_using_and_below_parameters() throws Throwable {
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));
-    raw.add(Arrays.asList("user1","1"));
-    raw.add(Arrays.asList("user2","2"));
-    raw.add(Arrays.asList("user3","3"));
+    raw.add(Arrays.asList("id1","1"));
+    raw.add(Arrays.asList("id2","2"));
+    raw.add(Arrays.asList("id3","3"));
     DataTable parameters = DataTable.create(raw );
 
     dbSaladSteps.i_set_up_data_in_DB_using_and_below_parameters("insertuserswithparams.sql",parameters);
@@ -161,9 +160,9 @@ public class DBSaladStepsTest {
   public void testI_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters() throws Throwable {
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));
-    raw.add(Arrays.asList("user1","1"));
-    raw.add(Arrays.asList("user2","2"));
-    raw.add(Arrays.asList("user3","3"));
+    raw.add(Arrays.asList("id1","1"));
+    raw.add(Arrays.asList("id2","2"));
+    raw.add(Arrays.asList("id3","3"));
     DataTable parameters = DataTable.create(raw );
 
     dbSaladSteps.i_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters("insertuserswithparams.sql", "teardownuserswithparam.sql",parameters);
@@ -194,7 +193,7 @@ public class DBSaladStepsTest {
   @Test
   public void testI_run_the_sql_file_for_the_below_data() throws Throwable{
     List<List<String>> raw = new ArrayList<List<String>>();
-    raw.add(Arrays.asList("user","name", "email"));
+    raw.add(Arrays.asList("id","name", "email"));
     raw.add(Arrays.asList("1","Ned Stark", "ned@gmail.com"));
     raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
     raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
@@ -221,12 +220,24 @@ public class DBSaladStepsTest {
   }
   
   @Test
+  public void testThe_result_of_the_sql_is() throws Throwable{
+    List<List<String>> raw = new ArrayList<List<String>>();
+    raw.add(Arrays.asList("id","name", "email"));
+    raw.add(Arrays.asList("1","Ned Stark", "ned@gmail.com"));
+    raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
+    raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
+    DataTable parameters = DataTable.create(raw );
+    dbSaladSteps.i_run_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
+    dbSaladSteps.the_result_of_the_sql_is("selectuser.sql", parameters);
+  }
+  
+  @Test
   public void testCreateParamMap() {
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));
-    raw.add(Arrays.asList("user1","1"));
-    raw.add(Arrays.asList("user2","2"));
-    raw.add(Arrays.asList("user3","3"));
+    raw.add(Arrays.asList("id1","1"));
+    raw.add(Arrays.asList("id2","2"));
+    raw.add(Arrays.asList("id3","3"));
     DataTable parameters = DataTable.create(raw );
     assertEquals(dbSaladSteps.createParamMap(parameters).size(), 3);
     assertTrue(!dbSaladSteps.createParamMap(parameters).containsKey("key"));

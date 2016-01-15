@@ -1,1 +1,1 @@
-INSERT INTO users VALUES ($user, '$name', '$email');
+INSERT INTO users VALUES ($id, '$name', '$email');

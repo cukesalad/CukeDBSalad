@@ -1,16 +1,21 @@
 package org.cukesalad.db.step;
 
+import static org.junit.Assert.assertTrue;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cukesalad.db.support.DBSaladHook;
 import org.cukesalad.db.support.DBSaladConstants;
 import org.cukesalad.db.support.DBSaladContext;
+import org.cukesalad.db.support.DBSaladHook;
 import org.cukesalad.db.support.DynamicSQLQuery;
 
 import cucumber.api.DataTable;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 public class DBSaladSteps {
@@ -83,6 +88,24 @@ public class DBSaladSteps {
       dynamicSQLQuery.setParameterMap(paramMap);
       DBSaladHook.executeUpdate(dynamicSQLQuery);
     }
+  }
+  
+  @Then("^the result of the sql \"([^\"]*)\", is:$")
+  public void the_result_of_the_sql_is(String setupFileName, DataTable expectedResults) throws Throwable {
+    List<Map<String, String>> expectedResultsMaps = expectedResults.asMaps(String.class, String.class);
+    DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
+    dynamicSQLQuery.setSqlFileName(setupFileName);
+    ResultSet result = DBSaladHook.executeQuery(dynamicSQLQuery);
+    List<String> columnNames = expectedResults.topCells();
+    List<Map<String, String>> actualResultsMaps = new ArrayList<Map<String,String>>();
+    while (result.next()) {
+      Map<String, String> actualRow = new HashMap<String, String>();
+      for (String columnName : columnNames) {
+        actualRow.put(columnName, result.getString(columnName));
+      }
+      actualResultsMaps.add(actualRow);
+    }
+    assertTrue(actualResultsMaps.containsAll(expectedResultsMaps));
   }
 
   
