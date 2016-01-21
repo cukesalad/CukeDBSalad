@@ -79,7 +79,7 @@ public class DBSaladSteps {
     collectTearDownFiles(tearDownFileName, createParamMap(parameters));
   }
 
-  @Given("^I set up data using the sql file \"([^\"]*)\", for the below data:$")
+  @Given("^I set up data using the sql file \"([^\"]*)\" for the below data:$")
   public void i_set_up_data_using_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters) throws Throwable {
     List<Map<String, String>> paramMapList = parameters.asMaps(String.class, String.class);
     for (Map<String, String> paramMap : paramMapList) {
@@ -90,7 +90,7 @@ public class DBSaladSteps {
     }
   }
   
-  @Then("^the result of the sql \"([^\"]*)\", is:$")
+  @Then("^the result of the sql \"([^\"]*)\" is:$")
   public void the_result_of_the_sql_is(String setupFileName, DataTable expectedResults) throws Throwable {
     List<Map<String, String>> expectedResultsMaps = expectedResults.asMaps(String.class, String.class);
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();

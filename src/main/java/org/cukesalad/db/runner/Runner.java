@@ -6,7 +6,7 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features={"classpath:feature"}, glue={"classpath:com.cukesalad"}, plugin={"pretty", "html:target/cukesalad", "json:target/cukesalad.json", "junit:target/cukesalad.xml"})
+@CucumberOptions(features={"classpath:feature"}, glue={"classpath:org.cukesalad"}, plugin={"pretty", "html:target/cukesalad", "json:target/cukesalad.json", "junit:target/cukesalad.xml"})
 public class Runner {
 
 }
