@@ -1,6 +1,8 @@
 package org.cukesalad.db.step;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -52,7 +54,8 @@ public class DBSaladSteps {
   }
 
   @Given("^I teardown data in DB using \"([^\"]*)\" and below parameters:$")
-  public void i_teardown_data_in_DB_using_and_below_parameters(String sqlFileName, DataTable parameters) throws Throwable {
+  public void i_teardown_data_in_DB_using_and_below_parameters(String sqlFileName, DataTable parameters)
+      throws Throwable {
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
     dynamicSQLQuery.setSqlFileName(sqlFileName);
     Map<String, String> parameterMap = createParamMap(parameters);
@@ -60,9 +63,10 @@ public class DBSaladSteps {
     DBSaladHook.executeUpdate(dynamicSQLQuery);
   }
 
-  
+
   @Given("^I set up data in DB using \"([^\"]*)\" and below parameters:$")
-  public void i_set_up_data_in_DB_using_and_below_parameters(String sqlFileName, DataTable parameters) throws Throwable {
+  public void i_set_up_data_in_DB_using_and_below_parameters(String sqlFileName, DataTable parameters)
+      throws Throwable {
     DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
     dynamicSQLQuery.setSqlFileName(sqlFileName);
     Map<String, String> parameterMap = createParamMap(parameters);
@@ -71,8 +75,9 @@ public class DBSaladSteps {
   }
 
   @Given("^I set up data in DB using \"([^\"]*)\", and rollback test data at the end using \"([^\"]*)\" with below parameters:$")
-  public void i_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters(String setupFileName, String tearDownFileName, DataTable parameters) throws Throwable {
- // first clean dirty data
+  public void i_setup_up_data_in_DB_using_and_rollback_test_data_at_the_end_using_with_below_parameters(
+      String setupFileName, String tearDownFileName, DataTable parameters) throws Throwable {
+    // first clean dirty data
     i_teardown_data_in_DB_using_and_below_parameters(tearDownFileName, parameters);
     // then setup data
     i_set_up_data_in_DB_using_and_below_parameters(setupFileName, parameters);
@@ -80,7 +85,8 @@ public class DBSaladSteps {
   }
 
   @Given("^I set up data using the sql file \"([^\"]*)\" for the below data:$")
-  public void i_set_up_data_using_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters) throws Throwable {
+  public void i_set_up_data_using_the_sql_file_for_the_below_data(String setupFileName, DataTable parameters)
+      throws Throwable {
     List<Map<String, String>> paramMapList = parameters.asMaps(String.class, String.class);
     for (Map<String, String> paramMap : paramMapList) {
       DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
@@ -89,7 +95,7 @@ public class DBSaladSteps {
       DBSaladHook.executeUpdate(dynamicSQLQuery);
     }
   }
-  
+
   @Then("^the result of the sql \"([^\"]*)\" is:$")
   public void the_result_of_the_sql_is(String setupFileName, DataTable expectedResults) throws Throwable {
     List<Map<String, String>> expectedResultsMaps = expectedResults.asMaps(String.class, String.class);
@@ -97,7 +103,7 @@ public class DBSaladSteps {
     dynamicSQLQuery.setSqlFileName(setupFileName);
     ResultSet result = DBSaladHook.executeQuery(dynamicSQLQuery);
     List<String> columnNames = expectedResults.topCells();
-    List<Map<String, String>> actualResultsMaps = new ArrayList<Map<String,String>>();
+    List<Map<String, String>> actualResultsMaps = new ArrayList<Map<String, String>>();
     while (result.next()) {
       Map<String, String> actualRow = new HashMap<String, String>();
       for (String columnName : columnNames) {
@@ -105,10 +111,24 @@ public class DBSaladSteps {
       }
       actualResultsMaps.add(actualRow);
     }
-    assertTrue(actualResultsMaps.containsAll(expectedResultsMaps));
+    assertTrue("the result of the cql doesn't match expected: expected result - " + expectedResultsMaps
+        + ", and actual result - " + actualResultsMaps, actualResultsMaps.containsAll(expectedResultsMaps));
   }
 
-  
+  @Then("^the result of the sql \"([^\"]*)\" is empty$")
+  public void the_result_of_the_sql_is_empty(String setupFileName) throws Throwable {
+    the_result_of_the_sql_has_rows(setupFileName, 0);
+  }
+
+  @Then("^the result of the sql \"([^\"]*)\" has (\\d+) rows$")
+  public void the_result_of_the_sql_has_rows(String setupFileName, Integer expectedRowSize) throws Throwable {
+    DynamicSQLQuery dynamicSQLQuery = new DynamicSQLQuery();
+    dynamicSQLQuery.setSqlFileName(setupFileName);
+    ResultSet result = DBSaladHook.executeQuery(dynamicSQLQuery);
+    result.last();
+    assertEquals(expectedRowSize.intValue(), result.getRow());
+  }
+
   public Map<String, String> createParamMap(DataTable parameters) {
     Map<String, String> parameterMap = new HashMap<String, String>(parameters.asMap(String.class, String.class));
     parameterMap.remove(DBSaladConstants.PARAM_MAP_KEY);

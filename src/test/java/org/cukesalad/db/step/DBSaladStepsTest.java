@@ -232,6 +232,23 @@ public class DBSaladStepsTest {
   }
   
   @Test
+  public void testThe_result_of_the_sql_is_empty() throws Throwable{
+    dbSaladSteps.the_result_of_the_sql_is_empty("selectuser.sql");
+  }
+  
+  @Test
+  public void testThe_result_of_the_sql_has_rows() throws Throwable{
+    List<List<String>> raw = new ArrayList<List<String>>();
+    raw.add(Arrays.asList("id","name", "email"));
+    raw.add(Arrays.asList("1","Ned Stark", "ned@gmail.com"));
+    raw.add(Arrays.asList("2","Tyrion", "tyrion@yahoo.com"));
+    raw.add(Arrays.asList("3","Daenerys", "daenerys@gmail.com"));
+    DataTable parameters = DataTable.create(raw );
+    dbSaladSteps.i_set_up_data_using_the_sql_file_for_the_below_data("parameterisedinsertusers.sql", parameters);
+    dbSaladSteps.the_result_of_the_sql_has_rows("selectuser.sql", 3);
+  }
+  
+  @Test
   public void testCreateParamMap() {
     List<List<String>> raw = new ArrayList<List<String>>();
     raw.add(Arrays.asList("key","value"));

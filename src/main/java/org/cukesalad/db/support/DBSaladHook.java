@@ -106,7 +106,7 @@ public class DBSaladHook {
     Statement stmt = null;
     ResultSet resultSet = null;
     try {
-      stmt = dbconnection.createStatement();
+      stmt = dbconnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       for (String eachQuery : batchQueries) {
         if (!eachQuery.trim().isEmpty()) {
           resultSet = stmt.executeQuery(eachQuery);

@@ -65,7 +65,8 @@ Feature: A feature to demonstrate DB cucumber util to setup/teardown/validate da
   | 1  | Ned Stark | ned@gmail.com      |
   | 2  | Tyrion    | tyrion@yahoo.com   |
   | 3  | Daenerys  | daenerys@gmail.com |
-
+  And the result of the sql "selectuser.cql" is empty
+  And the result of the sql "selectuser.cql" has 1 rows
 ```
 ## What if i have different DB instances/schemas for different environments?
 Add files like ```dbsalad.dev.properties``` and pass a run time jvm arg like ```-Denv=dev```. The DB details of ```dbsalad.dev.properties``` will override ```dbsalad.properties``` which is the default
