@@ -1,10 +1,8 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
-    }
+  repositories { jcenter() }
+  dependencies {
+    //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+  }
 }
 //apply plugin: 'com.jfrog.bintray'
 apply plugin: 'java'
@@ -35,9 +33,7 @@ dependencies {
   compile('com.fasterxml.jackson.core:jackson-databind:2.4.5')
   testCompile('org.hsqldb:hsqldb:2.3.3')
 }
-task wrapper(type: Wrapper) {
-  gradleVersion = '2.9'
-}
+task wrapper(type: Wrapper) { gradleVersion = '2.9' }
 
 
 ////////////////////////////////////////////////////
@@ -50,17 +46,14 @@ task sourcesJar(type: Jar) {
   classifier = 'sources'
   from sourceSets.main.allSource
 }
-artifacts {
-  archives javadocJar, sourcesJar
-}
+artifacts { archives javadocJar, sourcesJar }
 ////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////
 // this is needed for signing the jars in distribution
-signing {
-    sign configurations.archives
-}
+signing { sign configurations.archives }
+signArchives.onlyIf { Boolean.parseBoolean(signArchivesIsEnabled) }
 ////////////////////////////////////////////////////
 
 
@@ -72,11 +65,11 @@ uploadArchives {
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
       repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
+        authentication(userName: hasProperty('ossrhUsername')?ossrhUsername:'', password: hasProperty('ossrhPassword')?ossrhPassword:'')
       }
 
       snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
+        authentication(userName: hasProperty('ossrhUsername')?ossrhUsername:'', password: hasProperty('ossrhPassword')?ossrhPassword:'')
       }
 
       pom.project {
@@ -114,10 +107,10 @@ uploadArchives {
 ////////////////////////////////////////////////
 // This is needed for jfrog bintray plugin
 /*pkg {
-  version {
-              name = '1.0-SNAPSHOT'
-              desc = 'Cuke REST salad'
-              released  = new Date()
-      }
-}*/
+ version {
+ name = '1.0-SNAPSHOT'
+ desc = 'Cuke REST salad'
+ released  = new Date()
+ }
+ }*/
 ////////////////////////////////////////////////

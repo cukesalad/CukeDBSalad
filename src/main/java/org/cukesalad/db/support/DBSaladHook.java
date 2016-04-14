@@ -26,7 +26,7 @@ import cucumber.api.java.Before;
 
 public class DBSaladHook {
   static final Logger LOG = LoggerFactory.getLogger(DBSaladHook.class);
-  
+  static final int ORDER = 3;
   public static void refresh() {
     tearDownFiles = new ArrayList<DynamicSQLQuery>();
     dbprops = new Properties();
@@ -34,7 +34,7 @@ public class DBSaladHook {
     dbconnection = null;
   }
 
-  @Before()
+  @Before(order=ORDER,value="@DBSalad")
   public void beforeHook() {
     refresh();
     loadProperties();
@@ -57,7 +57,7 @@ public class DBSaladHook {
     }
   }
 
-  @After
+  @After(order=ORDER,value="@DBSalad")
   public void afterHook() throws IOException, SQLException {
     tearDownDBTestData();
     closeDBConnection();
@@ -82,25 +82,24 @@ public class DBSaladHook {
       }
       int[] updateCounts = stmt.executeBatch();
       dbconnection.commit();
-      System.out.println("the update counts for \n[" + sqlQuery.getSqlQuery() + "] are - \n"
+      LOG.info("the update counts for \n[" + sqlQuery.getSqlQuery() + "] are - \n"
           + new ObjectMapper().writeValueAsString(updateCounts));
     } catch (SQLException e) {
-      System.out.println("Failed to execute file - " + sqlQuery.getSqlFileName() + "! Check output console");
-      e.printStackTrace();
+      LOG.error("Failed to execute file - " + sqlQuery.getSqlFileName() + "! Check output console",e);
       throw e;
     } finally {
       if (stmt != null) {
         try {
           stmt.close();
         } catch (SQLException e) {
-          System.out.println("Failed to close statement while executing file - " + sqlQuery.getSqlFileName() + "! Check output console");
-          e.printStackTrace();
+          LOG.error("Failed to close statement while executing file - " + sqlQuery.getSqlFileName()
+              + "! Check output console",e);
           throw e;
         }
       }
     }
   }
-  
+
   public static ResultSet executeQuery(DynamicSQLQuery sqlQuery) throws IOException, SQLException {
     List<String> batchQueries = sqlQuery.getBatchQueryList();
     Statement stmt = null;
@@ -112,10 +111,9 @@ public class DBSaladHook {
           resultSet = stmt.executeQuery(eachQuery);
         }
       }
-      
-      //dbconnection.commit();
-      System.out.println("result set of the query \n[" + sqlQuery.getSqlQuery() + "] are - \n"
-          + resultSet);
+
+      // dbconnection.commit();
+      System.out.println("result set of the query \n[" + sqlQuery.getSqlQuery() + "] are - \n" + resultSet);
     } catch (SQLException e) {
       System.out.println("Failed to execute file - " + sqlQuery.getSqlFileName() + "! Check output console");
       e.printStackTrace();
@@ -125,7 +123,8 @@ public class DBSaladHook {
         try {
           stmt.close();
         } catch (SQLException e) {
-          System.out.println("Failed to close statement while executing file - " + sqlQuery.getSqlFileName() + "! Check output console");
+          System.out.println("Failed to close statement while executing file - " + sqlQuery.getSqlFileName()
+              + "! Check output console");
           e.printStackTrace();
           throw e;
         }
