@@ -53,6 +53,7 @@ artifacts { archives javadocJar, sourcesJar }
 ////////////////////////////////////////////////////
 // this is needed for signing the jars in distribution
 signing { sign configurations.archives }
+signArchives.onlyIf { Boolean.parseBoolean(signArchivesIsEnabled) }
 ////////////////////////////////////////////////////
 
 
